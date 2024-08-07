@@ -56,7 +56,7 @@ class Snake:
             x_disp = -CELL_SIZE
 
         self.head = self.body[0]
-        self.head = (self.head[0] + x_disp, self.head[1] + y_disp)
+        self.head = ((self.head[0] + x_disp) % SCREEN_WIDTH, (self.head[1] + y_disp) % SCREEN_HEIGHT)
         self.body.insert(0, self.head)
         if self.grow_tail:
             self.grow_tail = False
@@ -74,10 +74,11 @@ class Snake:
             pygame.draw.rect(self.screen_surface, self.color, pygame.Rect(body_x, body_y, CELL_SIZE, CELL_SIZE))
 
     def detect_collision(self):
-        if self.head[0] < 0 or self.head[0] > SCREEN_WIDTH:
-            return True
-        if self.head[1] < 0 or self.head[1] > SCREEN_HEIGHT:
-            return True
+        # first two not needed if I make the snake wrap around the screen
+        # if self.head[0] < 0 or self.head[0] > SCREEN_WIDTH:
+        #     return True
+        # if self.head[1] < 0 or self.head[1] > SCREEN_HEIGHT:
+        #     return True
         if self.head in self.body[1:]:
             return True
 
@@ -106,6 +107,7 @@ def main():
                 snake.set_direction(event.key)
         # clean screen then send the screen object to the snake to draw itself
         screen.fill(BLACK)
+        pygame.display.set_caption(f'Snake Game - Score = {len(snake.body)-1}')
         if not snake.move():
             game_is_running = False
         # check for apple:
